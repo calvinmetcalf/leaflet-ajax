@@ -37,7 +37,7 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
         request.open("GET",url);
         var _this=this;
         request.onreadystatechange = function(){
-            if (request.readyState === 4 && request.status === 200 && request.getResponseHeader("Content-Type") === "application/json"){
+            if (request.readyState === 4 && request.status === 200 ){
                 response = JSON.parse(request.responseText);
                 _this.addData(response);
             }
