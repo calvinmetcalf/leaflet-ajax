@@ -12,6 +12,8 @@ var geojsonLayer = L.geoJson.ajax("http:webhost.fake/geojson.jsonp",{dataType:"j
 ```
 as you see you can also use lower case methods without creating new objects
 
-for weirder jsonp there are the other two new options "callbackName" for if you need to specify the name of the callback and "callbackParam" for if you need to change the name of the callback parameter to something besides "callback"
+for weirder jsonp you can set "callbackParam" for if you need to change the name of the callback parameter to something besides "callback"
+
+behind the scenes are two new classes L.Util.ajax = function (url, cb) for same origin requests and L.Util.jsonp = function (url, cb, cbParam, callbackName) cross origin ones.
 
 some of the jsonp code inspired by/taken from [this interesting looking plugin](https://github.com/stefanocudini/leaflet-search) that I have failed to make heads nor tails of (the plugin, not the jsonp code)
