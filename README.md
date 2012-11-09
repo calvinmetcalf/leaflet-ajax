@@ -8,7 +8,7 @@ var geojsonLayer = new L.GeoJSON.AJAX("geojson.json");
 ```
 for jsonp add the option "dataType" and set it to "jsonp"
 ```js
-var geojsonLayer = L.geoJson.Ajax("http:webhost.fake/geojson.jsonp",{dataType:"jsonp"});
+var geojsonLayer = L.geoJson.ajax("http:webhost.fake/geojson.jsonp",{dataType:"jsonp"});
 ```
 as you see you can also use lower case methods without creating new objects
 

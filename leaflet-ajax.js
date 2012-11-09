@@ -65,6 +65,6 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
         scriptNode.src = ourl;    
     }
 });
-L.geoJson.Ajax = function (geojson, options) {
+L.geoJson.ajax = function (geojson, options) {
     return new L.GeoJSON.AJAX(geojson, options);
 };
