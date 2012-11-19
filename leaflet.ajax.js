@@ -1,4 +1,3 @@
-var L= this.L;
 L.GeoJSON.AJAX=L.GeoJSON.extend({
     defaultAJAXparams:{
      dataType:"json",
@@ -57,7 +56,6 @@ L.Util.jsonp = function (url, cb, cbParam, callbackName){
         cbs = "_" + Math.floor(Math.random()*1000000);
         cbn = "L.Util.jsonp.cb." + cbs;
     }
-    L.Util.jsonp.cb = {};
     L.Util.jsonp.cb[cbs] = cb;
     var scriptNode = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] );
     scriptNode.type = 'text/javascript';
@@ -68,6 +66,7 @@ L.Util.jsonp = function (url, cb, cbParam, callbackName){
     }
     scriptNode.src = ourl;   
 };
+L.Util.jsonp.cb = {};
 L.geoJson.ajax = function (geojson, options) {
     return new L.GeoJSON.AJAX(geojson, options);
 };
