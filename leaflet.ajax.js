@@ -62,7 +62,7 @@ L.Util.jsonp = function (url, cb, cbParam, callbackName){
     if (url.indexOf("?") === -1 ){
         ourl =  url+"?"+cbParam+"="+cbn;
     }else{
-        ourl =  url+"&"+cbParam+"=."+cbn;
+        ourl =  url+"&"+cbParam+"="+cbn;
     }
     scriptNode.src = ourl;   
 };
