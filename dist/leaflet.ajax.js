@@ -77,7 +77,7 @@ L.Util.jsonp = function (url, cb, cbParam, callbackName){
     if(callbackName){
         cbName= callbackName;
     }else{
-        cbSuffix = "_" + Math.floor(Math.random()*1000000);
+        cbSuffix = "_" + ("" + Math.random()).slice(2);
         cbName = "L.Util.jsonp.cb." + cbSuffix;
     }
     scriptNode = L.DomUtil.create('script', '', head);
