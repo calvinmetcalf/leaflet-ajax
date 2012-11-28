@@ -1,0 +1,10 @@
+{
+  
+"name": "leaflet.ajax",
+  "version": "0.0.1",
+  "dependencies": {
+    "coffee-script":"1.x",
+    "uglify-js" : ">= 0.0.1",
+    "jake" : ">= 0.0.1"
+  }
+}
