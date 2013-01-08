@@ -25,15 +25,22 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
         var _this = this;
         _this._url = url;
         if(this.ajaxParams.dataType.toLowerCase()==="json"){
-          L.Util.ajax(url, function(data){_this.addData(data);}); 
+          L.Util.ajax(url, function(data){_this._cache=data;_this.addData(data);}); 
         }else if(this.ajaxParams.dataType.toLowerCase()==="jsonp"){
-            L.Util.jsonp(url, function(data){_this.addData(data);}, _this.ajaxParams.callbackParam);
+            L.Util.jsonp(url, function(data){_this._cache=data;_this.addData(data);}, _this.ajaxParams.callbackParam);
         }
     },
     refresh: function (url){
     url = url || this._url;
     this.clearLayers();
     this.addUrl(url);
+    },
+    refilter:function (func){
+        if(typeof func !== "function"){
+            func = function(){return true;};
+        }
+        this.clearLayers();
+        this.addData(this._cache.features.filter(func));
     }
 });
 L.geoJson.ajax = function (geojson, options) {
