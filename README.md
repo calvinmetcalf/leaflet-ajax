@@ -14,6 +14,26 @@ as you see you can also use lower case methods without creating new objects
 
 for weirder jsonp you can set "callbackParam" for if you need to change the name of the callback parameter to something besides "callback", e.g. [Mapquest Nominative Open](http://open.mapquestapi.com/nominatim/) uses "json_callback" instead of "callback".
 
+you can also add a middleware function which is called after you download the data but before you add it to leaflet:
+
+```javascript
+var geojsonLayer = L.geoJson.ajax("route/to/esri.json",{middleware:function(data){doStuff;return geojson;}});
+```
+you can also add an array of urls instead of just one, bear in mind that "addUrl" adds the new url(s) to the list of current ones, but if you want to replace them use refresh e.g.:
+```javascript
+var geojsonLayer = L.geoJson.ajax("data.json");
+geojsonLayer.addUrl("data2.json");//we now have 2 layers
+geojsonLayer.refresh();//redownload those two layers
+geojsonLayer.refresh(["new1.json","new2.json"]);//add two new layer replacing the current ones
+```
+last but now least we can refilter layers without re adding them
+```javascript
+var geojsonLayer = L.geoJson.ajax("data.json");
+geojsonLayer.refilter(function(feature){
+    return feature.properties.key === values;
+});
+```
+
 behind the scenes are two new classes L.Util.ajax = function (url, cb) for same origin requests and L.Util.jsonp = function (url, cb, cbParam, callbackName) cross origin ones, meaning you don't actually have to use this with the built in layer type, you can do
 
 ```js

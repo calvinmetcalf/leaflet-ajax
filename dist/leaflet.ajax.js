@@ -6,7 +6,17 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
     },
     initialize: function (url, options) { // (String, Object)
 
-        this._url = url;
+        this._urls = [];
+        if (url) {    
+            if (typeof url === "string") {
+                this._urls.push(url);
+            }else if (typeof url.pop === "function") {
+                this._urls = this._urls.concat(url)
+            }else{
+                options = url
+                url = undefined
+            }
+        }
         var ajaxParams = L.Util.extend({}, this.defaultAJAXparams);
 
         for (var i in options) {
@@ -18,22 +28,31 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
 		this.ajaxParams = ajaxParams;
         this._layers = {};
 		L.Util.setOptions(this, options);
-        if(this._url){
-            this.addUrl(this._url);
+        if(this._urls.length > 0){
+            this.addUrl(this._urls);
         }
     },
     addUrl: function (url) {
         var _this = this;
-        _this._url = url;
-        
-        if(this.ajaxParams.dataType.toLowerCase()==="json"){
-          L.Util.ajax(url, function(d){var data = _this.ajaxParams.middleware(d);_this._cache=_this._cache.concat(data.features);_this.addData(data);_this.fire("dataLoaded");}); 
-        }else if(this.ajaxParams.dataType.toLowerCase()==="jsonp"){
-            L.Util.jsonp(url, function(d){var data = _this.ajaxParams.middleware(d);_this._cache=_this._cache.concat(data.features);;_this.addData(data);_this.fire("dataLoaded");}, _this.ajaxParams.callbackParam);
+        if (typeof url === "string") {
+                _this._urls.push(url);
+            }else if (typeof url.pop === "function") {
+                _this._urls = _this._urls.concat(url)
+            }
+        var _this = this;
+        var len = _this._urls.length;
+        var i=0;
+        while(i<len){
+            if(_this.ajaxParams.dataType.toLowerCase()==="json"){    
+              L.Util.ajax(_this._urls[i], function(d){var data = _this.ajaxParams.middleware(d);_this._cache=_this._cache.concat(data.features);_this.addData(data);_this.fire("dataLoaded");}); 
+            }else if(_this.ajaxParams.dataType.toLowerCase()==="jsonp"){
+                L.Util.jsonp(_this._urls[i], function(d){var data = _this.ajaxParams.middleware(d);_this._cache=_this._cache.concat(data.features);;_this.addData(data);_this.fire("dataLoaded");}, _this.ajaxParams.callbackParam);
+            }
+            i++
         }
     },
     refresh: function (url){
-    url = url || this._url;
+    url = url || this._urls;
     this.clearLayers();
     this.addUrl(url);
     },
