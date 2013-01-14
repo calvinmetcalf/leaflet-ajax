@@ -57,11 +57,12 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
     this.addUrl(url);
     },
     refilter:function (func){
-        if(typeof func !== "function"){
-            func = function(){return true;};
-        }
         this.clearLayers();
-        this.addData(this._cache.filter(func));
+        if (typeof func !== "function") {
+            this.addData(this._cache);
+        }else {
+            this.addData(this._cache.filter(func));
+        }
     }
 });
 L.geoJson.ajax = function (geojson, options) {
