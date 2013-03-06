@@ -42,6 +42,7 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
         var _this = this;
         var len = _this._urls.length;
         var i=0;
+        _this.fire("beforeDataLoad");
         while(i<len){
             if(_this.ajaxParams.dataType.toLowerCase()==="json"){    
               L.Util.ajax(_this._urls[i], function(d){var data = _this.ajaxParams.middleware(d);_this._cache=_this._cache.concat(data.features);_this.addData(data);_this.fire("dataLoaded");}); 
@@ -50,6 +51,7 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
             }
             i++
         }
+        _this.fire("dataLoadComplete");
     },
     refresh: function (url){
     url = url || this._urls;
