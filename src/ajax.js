@@ -1,5 +1,5 @@
 L.Util.ajax = function (url, cb) {
-    // the following is from JavaScript: The Definitive Guide
+	// the following is from JavaScript: The Definitive Guide
 	if (window.XMLHttpRequest === undefined) {
 		window.XMLHttpRequest = function() {
 			try {
@@ -15,17 +15,17 @@ L.Util.ajax = function (url, cb) {
 			}
 		};
 	}
-    var response, request = new XMLHttpRequest();
-    request.open("GET", url);
-    request.onreadystatechange = function() {
-        if (request.readyState === 4 && request.status === 200) {
-        	if(window.JSON) {
-                response = JSON.parse(request.responseText);
-        	} else {
-        		response = eval("("+ request.responseText + ")");
-        	}
-            cb(response);
-        }
-    };
-    request.send();    
+	var response, request = new XMLHttpRequest();
+	request.open("GET", url);
+	request.onreadystatechange = function() {
+		if (request.readyState === 4 && request.status === 200) {
+			if(window.JSON) {
+				response = JSON.parse(request.responseText);
+			} else {
+				response = eval("("+ request.responseText + ")");
+			}
+			cb(response);
+		}
+	};
+	request.send();	
 };
