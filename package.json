@@ -1,7 +1,7 @@
 {
   
 "name": "leaflet.ajax",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "dependencies": {
     "coffee-script":"1.x",
     "uglify-js" : ">= 0.0.1",
