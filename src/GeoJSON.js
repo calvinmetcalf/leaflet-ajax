@@ -33,7 +33,7 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
 	},
 	clearLayers:function(){
 		this._urls = [];
-		L.GeoJSON.clearLayers.call(this);
+		L.GeoJSON.clearLayers.prototype.call(this);
 		return this;
 	},
 	addUrl: function (url) {
