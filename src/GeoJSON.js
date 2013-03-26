@@ -27,6 +27,11 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
 		this.ajaxParams = ajaxParams;
 		this._layers = {};
 		L.Util.setOptions(this, options);
+		this.on("dataLoadComplete",function(){
+			if(this._filter){
+				this.refilter(this._filter);
+			}
+		},this);
 		if(this._urls.length > 0){
 			this.addUrl();
 		}
@@ -45,32 +50,40 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
 				_this._urls = _this._urls.concat(url)
 			}
 		}
-		var _this = this;
-		var len = _this._urls.length;
+		_this._loading = _this._urls.length;
 		var i=0;
+		_this._done=0;
 		_this.fire("beforeDataLoad");
-		while(i<len){
+		while(i<_this._loading){
 			if(_this.ajaxParams.dataType.toLowerCase()==="json"){	
 			  L.Util.ajax(_this._urls[i], function(d){var data = _this.ajaxParams.middleware(d);_this.addData(data);_this.fire("dataLoaded");}); 
 			}else if(_this.ajaxParams.dataType.toLowerCase()==="jsonp"){
 				L.Util.ajax(_this._urls[i],{jsonp:true}, function(d){var data = _this.ajaxParams.middleware(d);_this.addData(data);_this.fire("dataLoaded");}, _this.ajaxParams.callbackParam);
 			}
-			i++
+			i++;
 		}
-		_this.fire("dataLoadComplete");
+		_this.on("dataLoaded",function(){
+			this._done++;
+			if(this._done===this._loading){
+				this.fire("dataLoadComplete");
+			}
+		},_this);
 	},
 	refresh: function (url){
-	url = url || this._urls;
-	this.clearLayers();
-	this.addUrl(url);
+		url = url || this._urls;
+		this.clearLayers();
+		this.addUrl(url);
 	},
 	refilter:function (func){
 		if(typeof func !== "function"){
+			this._filter = false;
 			this.eachLayer(function(a){
 				a.setStyle({stroke:true,clickable:true});
 			});
 		}else{
+			this._filter=func;
 			this.eachLayer(function(a){
+				
 				if(func(a.feature)){
 					a.setStyle({stroke:true,clickable:true});
 				}else{
