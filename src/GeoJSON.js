@@ -5,18 +5,10 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
 	 middleware:function(f){return f;}
 	},
 	initialize: function (url, options) { // (String, Object)
-
-		this._urls = [];
-		if (url) {	
-			if (typeof url === "string") {
-				this._urls.push(url);
-			}else if (typeof url.pop === "function") {
-				this._urls = this._urls.concat(url)
-			}else{
+		if (url && typeof url !== "string") {	
 				options = url
 				url = undefined
 			}
-		}
 		var ajaxParams = L.Util.extend({}, this.defaultAJAXparams);
 
 		for (var i in options) {
@@ -27,52 +19,37 @@ L.GeoJSON.AJAX=L.GeoJSON.extend({
 		this.ajaxParams = ajaxParams;
 		this._layers = {};
 		L.Util.setOptions(this, options);
-		this.on("dataLoadComplete",function(){
-			if(this._filter){
-				this.refilter(this._filter);
-			}
-		},this);
-		if(this._urls.length > 0){
-			this.addUrl();
+		if(url){
+			this.addUrl(url);
 		}
 	},
 	clearLayers:function(){
-		this._urls = [];
+		this._url = undefined;
+		this.off("dataloadInt");
 		L.GeoJSON.prototype.clearLayers.call(this);
 		return this;
 	},
 	addUrl: function (url) {
 		var _this = this;
-		if(url){
-			if (typeof url === "string") {
-				_this._urls.push(url);
-			}else if (typeof url.pop === "function") {
-				_this._urls = _this._urls.concat(url)
+		_this._url = url;
+		_this.on("dataloadInt",function(e){
+			_this.addData(e.data);
+			if(this._filter){
+				this.refilter(this._filter);
 			}
-		}
-		_this._loading = _this._urls.length;
-		var i=0;
-		_this._done=0;
-		_this.fire("beforeDataLoad");
-		while(i<_this._loading){
-			if(_this.ajaxParams.dataType.toLowerCase()==="json"){	
-			  L.Util.ajax(_this._urls[i], function(d){var data = _this.ajaxParams.middleware(d);_this.addData(data);_this.fire("dataLoaded");}); 
-			}else if(_this.ajaxParams.dataType.toLowerCase()==="jsonp"){
-				L.Util.ajax(_this._urls[i],{jsonp:true}, function(d){var data = _this.ajaxParams.middleware(d);_this.addData(data);_this.fire("dataLoaded");}, _this.ajaxParams.callbackParam);
-			}
-			i++;
-		}
-		_this.on("dataLoaded",function(){
-			this._done++;
-			if(this._done===this._loading){
-				this.fire("dataLoadComplete");
-			}
+			this.fire("data:loaded");
 		},_this);
+		_this.fire("data:loading");
+			if(_this.ajaxParams.dataType.toLowerCase()==="json"){	
+			  L.Util.ajax(url, function(d){_this.fire("dataloadInt",{data:_this.ajaxParams.middleware(d)});}); 
+			}else if(_this.ajaxParams.dataType.toLowerCase()==="jsonp"){
+				L.Util.ajax(url,{jsonp:true}, function(d){_this.fire("dataloadInt",{data:_this.ajaxParams.middleware(d)});}, _this.ajaxParams.callbackParam);
+			}
 	},
 	refresh: function (url){
-		url = url || this._urls;
-		this.clearLayers();
-		this.addUrl(url);
+		url = (url || this._url);
+			this.clearLayers();
+			this.addUrl(url);
 	},
 	refilter:function (func){
 		if(typeof func !== "function"){
