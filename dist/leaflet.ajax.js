@@ -97,7 +97,7 @@ L.geoJson.ajax = function (geojson, options) {
 	return new L.GeoJSON.AJAX(geojson, options);
 };
 L.Util.ajax = function (url,options, cb) {
-	var cbName,ourl,cbSuffix,scriptNode, head, cbParam;
+	var cbName,ourl,cbSuffix,scriptNode, head, cbParam, XMHreq;
 	if(typeof options === "function"){
 		cb = options;
 		options = {};
@@ -126,10 +126,11 @@ L.Util.ajax = function (url,options, cb) {
 			ourl =  url+"&"+cbParam+"="+cbName;
 		}
 		scriptNode.src = ourl;
+		return {abort:function(){return false}}
 	}else{	
 		// the following is from JavaScript: The Definitive Guide
 		if (window.XMLHttpRequest === undefined) {
-			window.XMLHttpRequest = function() {
+			XMHreq = function() {
 				try {
 					return new ActiveXObject("Microsoft.XMLHTTP.6.0");
 				}
@@ -142,8 +143,10 @@ L.Util.ajax = function (url,options, cb) {
 					}
 				}
 			};
+		}else{
+			XMHreq = window.XMLHttpRequest
 		}
-		var response, request = new XMLHttpRequest();
+		var response, request = new XMHreq();
 		request.open("GET", url);
 		request.onreadystatechange = function() {
 			if (request.readyState === 4 && request.status === 200) {
@@ -156,6 +159,7 @@ L.Util.ajax = function (url,options, cb) {
 			}
 		};
 		request.send();	
+		return request;
 	}
 };
 L.Util.ajax.cb = {};
