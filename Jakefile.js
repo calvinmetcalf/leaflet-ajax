@@ -18,4 +18,4 @@ task('min', ['build'], function(){
         return console.log("minified");
     });
 });
-task('default', ['build']);
+task('default', ['min']);
