@@ -1,0 +1,23 @@
+{
+  "name": "leaflet.ajax",
+  "version": "0.2.0",
+  "homepage": "https://github.com/calvinmetcalf/leaflet-ajax",
+  "authors": [
+    "Calvin Metcalf <calvin.metcalf@state.ma.us>"
+  ],
+  "description": "AJAX and JSONP in Leaflet",
+  "main": "dist/leaflet.ajax.js",
+  "keywords": [
+    "leaflet",
+    "ajax",
+    "jsonp"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
