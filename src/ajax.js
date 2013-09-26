@@ -31,7 +31,7 @@ L.Util.ajax = function(url, options, cb) {
 	request.open('GET', url);
 	request.onreadystatechange = function() {
 		/*jslint evil: true */
-		if (request.readyState === 4 && request.status === 200) {
+		if (request.readyState === 4 && request.status < 400) {
 			if (window.JSON) {
 				response = JSON.parse(request.responseText);
 			}
