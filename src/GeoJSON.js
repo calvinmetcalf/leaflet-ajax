@@ -35,6 +35,7 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 			if (this.filter) {
 				this.refilter(this.filter);
 			}
+			if (typeof options.onComplete === 'function') options.onComplete(this._layers);
 		}, this);
 		if (this.urls.length > 0) {
 			this.addUrl();
