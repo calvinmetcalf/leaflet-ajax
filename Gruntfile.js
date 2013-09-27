@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 		},
 		concat: {
 			build: {
-				src: ['src/ajax.js', 'src/GeoJSON.js'],
+				src: ['src/promise.js','src/ajax.js', 'src/GeoJSON.js'],
 				dest: 'dist/<%= pkg.name %>.js'
 			}
 		},

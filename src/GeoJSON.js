@@ -60,20 +60,18 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 		self.fire('beforeDataLoad');
 		self.urls.forEach(function(url) {
 			if (self.ajaxParams.dataType.toLowerCase() === 'json') {
-				L.Util.ajax(url, function(d) {
+				L.Util.ajax(url).then(function(d) {
 					var data = self.ajaxParams.middleware(d);
 					self.addData(data);
 					self.fire('dataLoaded');
 				});
 			}
 			else if (self.ajaxParams.dataType.toLowerCase() === 'jsonp') {
-				L.Util.ajax(url, {
-					jsonp: true
-				}, function(d) {
+				L.Util.ajax.jsonp(url).then(function(d) {
 					var data = self.ajaxParams.middleware(d);
 					self.addData(data);
 					self.fire('dataLoaded');
-				}, self.ajaxParams.callbackParam);
+				});
 			}
 		});
 		self.on('dataLoaded', function() {
