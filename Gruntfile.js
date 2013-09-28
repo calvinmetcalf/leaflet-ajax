@@ -2,6 +2,9 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		uglify: {
+		    options:{
+		        report: 'gzip'
+		    },
 			build: {
 				src: 'dist/<%= pkg.name %>.js',
 				dest: 'dist/<%= pkg.name %>.min.js'

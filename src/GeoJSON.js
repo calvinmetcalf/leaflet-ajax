@@ -31,13 +31,18 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 		this.ajaxParams = ajaxParams;
 		this._layers = {};
 		L.Util.setOptions(this, options);
-		this.on('dataLoadComplete', function() {
+		this.on('data:loaded', function() {
 			if (this.filter) {
 				this.refilter(this.filter);
 			}
 		}, this);
+		var self = this;
 		if (this.urls.length > 0) {
-			this.addUrl();
+			L.Util.Promise(function(yes){
+			    yes();
+			}).then(function(){
+			    self.addUrl();
+		    });
 		}
 	},
 	clearLayers: function() {
@@ -57,26 +62,26 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 		}
 		var loading = self.urls.length;
 		var done = 0;
-		self.fire('beforeDataLoad');
+		self.fire('data:loading');
 		self.urls.forEach(function(url) {
 			if (self.ajaxParams.dataType.toLowerCase() === 'json') {
-				L.Util.ajax(url).then(function(d) {
+				L.Util.ajax(url,self.ajaxParams).then(function(d) {
 					var data = self.ajaxParams.middleware(d);
 					self.addData(data);
-					self.fire('dataLoaded');
+					self.fire('data:progress');
 				});
 			}
 			else if (self.ajaxParams.dataType.toLowerCase() === 'jsonp') {
-				L.Util.ajax.jsonp(url).then(function(d) {
+				L.Util.ajax.jsonp(url,self.ajaxParams).then(function(d) {
 					var data = self.ajaxParams.middleware(d);
 					self.addData(data);
-					self.fire('dataLoaded');
+					self.fire('data:progress');
 				});
 			}
 		});
-		self.on('dataLoaded', function() {
+		self.on('data:progress', function() {
 			if (++done === loading) {
-				self.fire('dataLoadComplete');
+				self.fire('data:loaded');
 			}
 		});
 	},
