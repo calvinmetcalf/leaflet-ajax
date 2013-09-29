@@ -68,14 +68,14 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 				L.Util.ajax(url,self.ajaxParams).then(function(d) {
 					var data = self.ajaxParams.middleware(d);
 					self.addData(data);
-					self.fire('data:progress');
+					self.fire('data:progress',data);
 				});
 			}
 			else if (self.ajaxParams.dataType.toLowerCase() === 'jsonp') {
 				L.Util.jsonp(url,self.ajaxParams).then(function(d) {
 					var data = self.ajaxParams.middleware(d);
 					self.addData(data);
-					self.fire('data:progress');
+					self.fire('data:progress',data);
 				});
 			}
 		});

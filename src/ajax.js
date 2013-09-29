@@ -4,8 +4,11 @@ L.Util.ajax = function(url, options) {
 	if (options.jsonp) {
 		return L.Util.ajax.jsonp(url, options);
 	}
-	return L.Util.Promise(function(resolve,reject){
+	var request;
+	var cancel;
+	var out = L.Util.Promise(function(resolve,reject){
 		var Ajax;
+		cancel=reject;
 		// the following is from JavaScript: The Definitive Guide
 		if (window.XMLHttpRequest === undefined) {
 			Ajax = function() {
@@ -25,7 +28,8 @@ L.Util.ajax = function(url, options) {
 		else {
 			Ajax = window.XMLHttpRequest;
 		}
-		var response, request = new Ajax();
+		var response;
+		request = new Ajax();
 		request.open('GET', url);
 		request.onreadystatechange = function() {
 			/*jslint evil: true */
@@ -33,8 +37,7 @@ L.Util.ajax = function(url, options) {
 				if(request.status < 400) {
 					if (window.JSON) {
 						response = JSON.parse(request.responseText);
-					}
-					else {
+					} else if (options.evil) {
 						response = eval('(' + request.responseText + ')');
 					}
 					resolve(response);
@@ -44,37 +47,10 @@ L.Util.ajax = function(url, options) {
 			}
 		};
 		request.send();
+	}).then(null,function(reason){
+		request.cancel();
+		return reason;
 	});
+	out.abort = cancel;
+	return out;
 };
-L.Util.jsonp = function(url, options) {
-	options = options || {};
-	return L.Util.Promise(function(resolve){
-		var head = document.getElementsByTagName('head')[0];
-		var cbParam = options.cbParam || 'callback';
-		var cbName, ourl, cbSuffix;
-		if (options.callbackName) {
-			cbName = options.callbackName;
-		}
-		else {
-			cbSuffix = '_' + ('' + Math.random()).slice(2);
-			cbName = 'L.Util.ajax.cb.' + cbSuffix;
-		}
-		var scriptNode = L.DomUtil.create('script', '', head);
-		scriptNode.type = 'text/javascript';
-		if (cbSuffix) {
-			L.Util.ajax.cb[cbSuffix] = function(data) {
-				head.removeChild(scriptNode);
-				delete L.Util.ajax.cb[cbSuffix];
-				resolve(data);
-			};
-		}
-		if (url.indexOf('?') === -1) {
-			ourl = url + '?' + cbParam + '=' + cbName;
-		}
-		else {
-			ourl = url + '&' + cbParam + '=' + cbName;
-		}
-		scriptNode.src = ourl;
-	});
-};
-L.Util.ajax.cb = {};
