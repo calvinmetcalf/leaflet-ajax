@@ -16,6 +16,8 @@
 
 <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
 <script type="text/javascript" src="../dist/leaflet.ajax.js"></script>
+<script src="spin.js"></script>
+<script src="leaflet.spin.js"></script>
 
  
 
@@ -32,15 +34,9 @@ var mopt = {
     url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.jpeg',
     options: {attribution:mapQuestAttr + osmDataAttr, subdomains:'1234'}
   };
-var osm = L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:osmDataAttr});
 var mq=L.tileLayer(mopt.url,mopt.options);
 
 mq.addTo(m);
-
-var baseMaps = {
-    "Map Quest": mq,
-    "Open Street Map":osm
-};
 
 
 
@@ -53,17 +49,7 @@ function popUp(f,l){
         l.bindPopup(out.join("<br />"));
     }
 }
-var jsonTest = new L.GeoJSON.AJAX("test.geojson",{onEachFeature:popUp});
-var jsonpTest = L.geoJson.ajax("http://kublai.ro.lt/test.geojson",{onEachFeature:popUp,dataType:"jsonp"});
-
-jsonTest.addTo(m);
-var overlays={
-"json":jsonTest,
-"jsonp":jsonpTest
-}
-
-var lc=L.control.layers(baseMaps,overlays);
-lc.addTo(m);
+var jsonTest = new L.GeoJSON.AJAX(["colleges.geojson","counties.geojson"],{onEachFeature:popUp}).addTo(m);
 </script>
        
         

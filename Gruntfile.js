@@ -2,6 +2,9 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		uglify: {
+		    options:{
+		        report: 'gzip'
+		    },
 			build: {
 				src: 'dist/<%= pkg.name %>.js',
 				dest: 'dist/<%= pkg.name %>.min.js'
@@ -9,7 +12,7 @@ module.exports = function(grunt) {
 		},
 		concat: {
 			build: {
-				src: ['src/ajax.js', 'src/GeoJSON.js'],
+				src: ['src/promise.js','src/ajax.js','src/jsonp.js', 'src/GeoJSON.js'],
 				dest: 'dist/<%= pkg.name %>.js'
 			}
 		},
@@ -17,7 +20,7 @@ module.exports = function(grunt) {
 			options:{
 				jshintrc:".jshintrc"
 			},
-			all:['src/ajax.js', 'src/GeoJSON.js']
+			all:['src/ajax.js','src/jsonp.js', 'src/GeoJSON.js']
 		}
 	});
 	grunt.loadNpmTasks('grunt-contrib-uglify');
