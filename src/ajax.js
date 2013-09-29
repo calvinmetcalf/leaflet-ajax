@@ -46,7 +46,7 @@ L.Util.ajax = function(url, options) {
 		request.send();
 	});
 };
-L.Util.ajax.jsonp = function(url, options) {
+L.Util.jsonp = function(url, options) {
 	options = options || {};
 	return L.Util.Promise(function(resolve){
 		var head = document.getElementsByTagName('head')[0];

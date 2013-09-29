@@ -6,7 +6,7 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 			return f;
 		}
 	},
-	initialize: function(url, options) { // (String, Object)
+	initialize: function(url, options) {
 
 		this.urls = [];
 		if (url) {
@@ -72,7 +72,7 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 				});
 			}
 			else if (self.ajaxParams.dataType.toLowerCase() === 'jsonp') {
-				L.Util.ajax.jsonp(url,self.ajaxParams).then(function(d) {
+				L.Util.jsonp(url,self.ajaxParams).then(function(d) {
 					var data = self.ajaxParams.middleware(d);
 					self.addData(data);
 					self.fire('data:progress');
