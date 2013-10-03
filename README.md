@@ -11,6 +11,7 @@ for jsonp add the option "dataType" and set it to "jsonp"
 var geojsonLayer = L.geoJson.ajax("http:webhost.fake/geojson.jsonp",{dataType:"jsonp"});
 ```
 Note that data starts to download when the layer is created NOT when it’s added to the map in order to get a head start.
+
 You may pass either a url string or an array of url strings if you want to download multiple things (handy
 if your downloading data from an ESRI based thing which will have separate line, point, and poly features).
 
