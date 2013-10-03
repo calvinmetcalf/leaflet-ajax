@@ -1,22 +1,24 @@
 leaflet-ajax
 ===========
 
-alows you to call json over ajax either localally or with jsonp, for local json the api is pretty much the same
+Allows you to call JSON via an Ajax call with a jsonp fallback.
 
-```js
+```javascript
 var geojsonLayer = new L.GeoJSON.AJAX("geojson.json");
 ```
 for jsonp add the option "dataType" and set it to "jsonp"
-```js
+``` javascript
 var geojsonLayer = L.geoJson.ajax("http:webhost.fake/geojson.jsonp",{dataType:"jsonp"});
 ```
-
+Note that data starts to download when the layer is created NOT when it’s added to the map in order to get a head start.
 You may pass either a url string or an array of url strings if you want to download multiple things (handy
-if your downloading data from an ESRI based thing which will have seperate line, point, and poly features).
+if your downloading data from an ESRI based thing which will have separate line, point, and poly features).
 
 As you see you can also use lower case methods without creating new objects
 
 For weirder jsonp you can set "callbackParam" for if you need to change the name of the callback parameter to something besides "callback", e.g. [Mapquest Nominative Open](http://open.mapquestapi.com/nominatim/) uses "json_callback" instead of "callback".
+
+If you want to use `eval` to parse JSON in older browsers you need to pass an option `evil` set to something truthy.
 
 Gives off three events `data:loading`, `data:progress` and `data:loaded`.
 
