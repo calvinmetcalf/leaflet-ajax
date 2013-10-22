@@ -2,6 +2,7 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 	defaultAJAXparams: {
 		dataType: 'json',
 		callbackParam: 'callback',
+		local:false,
 		middleware: function(f) {
 			return f;
 		}
@@ -69,6 +70,8 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 					var data = self.ajaxParams.middleware(d);
 					self.addData(data);
 					self.fire('data:progress',data);
+				},function(err){
+					self.fire('data:progress',{error:err});
 				});
 			}
 			else if (self.ajaxParams.dataType.toLowerCase() === 'jsonp') {
@@ -76,6 +79,8 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 					var data = self.ajaxParams.middleware(d);
 					self.addData(data);
 					self.fire('data:progress',data);
+				},function(err){
+					self.fire('data:progress',{error:err});
 				});
 			}
 		});

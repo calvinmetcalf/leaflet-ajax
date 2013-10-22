@@ -34,7 +34,7 @@ L.Util.ajax = function(url, options) {
 		request.onreadystatechange = function() {
 			/*jslint evil: true */
 			if (request.readyState === 4) {
-				if(request.status < 400) {
+				if((request.status < 400&&options.local)|| request.status===200) {
 					if (window.JSON) {
 						response = JSON.parse(request.responseText);
 					} else if (options.evil) {
@@ -42,13 +42,18 @@ L.Util.ajax = function(url, options) {
 					}
 					resolve(response);
 				} else {
-					reject(request.statusText);
+					if(!request.status){
+						reject('Attempted cross origin request without CORS enabled');
+					}else{
+						reject(request.statusText);
+					}
 				}
 			}
 		};
 		request.send();
-	}).then(null,function(reason){
-		request.cancel();
+	});
+	out.then(null,function(reason){
+		request.abort();
 		return reason;
 	});
 	out.abort = cancel;

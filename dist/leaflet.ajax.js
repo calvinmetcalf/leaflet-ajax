@@ -542,7 +542,7 @@ L.Util.ajax = function(url, options) {
 		request.onreadystatechange = function() {
 			/*jslint evil: true */
 			if (request.readyState === 4) {
-				if(request.status < 400) {
+				if((request.status < 400&&options.local)|| request.status===200) {
 					if (window.JSON) {
 						response = JSON.parse(request.responseText);
 					} else if (options.evil) {
@@ -550,13 +550,18 @@ L.Util.ajax = function(url, options) {
 					}
 					resolve(response);
 				} else {
-					reject(request.statusText);
+					if(!request.status){
+						reject('Attempted cross origin request without CORS enabled');
+					}else{
+						reject(request.statusText);
+					}
 				}
 			}
 		};
 		request.send();
-	}).then(null,function(reason){
-		request.cancel();
+	});
+	out.then(null,function(reason){
+		request.abort();
 		return reason;
 	});
 	out.abort = cancel;
@@ -607,6 +612,7 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 	defaultAJAXparams: {
 		dataType: 'json',
 		callbackParam: 'callback',
+		local:false,
 		middleware: function(f) {
 			return f;
 		}
@@ -674,6 +680,8 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 					var data = self.ajaxParams.middleware(d);
 					self.addData(data);
 					self.fire('data:progress',data);
+				},function(err){
+					self.fire('data:progress',{error:err});
 				});
 			}
 			else if (self.ajaxParams.dataType.toLowerCase() === 'jsonp') {
@@ -681,6 +689,8 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 					var data = self.ajaxParams.middleware(d);
 					self.addData(data);
 					self.fire('data:progress',data);
+				},function(err){
+					self.fire('data:progress',{error:err});
 				});
 			}
 		});
