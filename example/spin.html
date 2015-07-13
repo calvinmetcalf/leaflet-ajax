@@ -9,19 +9,19 @@
       body { height: 100%; margin: 0; padding: 0;}
       #map{ height: 100% }
     </style>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.6.4/leaflet.css" />
 <!--[if lte IE 8]>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.6.4/leaflet.ie.css" />
 <![endif]-->
 
-<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.6.4/leaflet.js"></script>
 <script type="text/javascript" src="../dist/leaflet.ajax.js"></script>
 <script src="spin.js"></script>
 <script src="leaflet.spin.js"></script>
 
- 
 
-   
+
+
     <title>Leaflet AJAX</title>
     </head>
     <body>
@@ -51,7 +51,7 @@ function popUp(f,l){
 }
 var jsonTest = new L.GeoJSON.AJAX(["colleges.geojson","counties.geojson"],{onEachFeature:popUp}).addTo(m);
 </script>
-       
-        
+
+
     </body>
 </html>
