@@ -6,11 +6,11 @@
   "directories": {
     "example": "example"
   },
-  "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-uglify": "~0.2.4",
-    "grunt-contrib-jshint": "~0.6.4"
+  "scripts": {
+    "build": "npm run jshint && npm run concat && npm run min",
+    "concat": "cat src/promise.js src/ajax.js src/jsonp.js src/GeoJSON.js > dist/leaflet.ajax.js",
+    "min": "uglifyjs -mc < dist/leaflet.ajax.js > dist/leaflet.ajax.min.js",
+    "jshint": "jshint src/ajax.js src/jsonp.js src/GeoJSON.js"
   },
   "repository": {
     "type": "git",
@@ -25,5 +25,9 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/calvinmetcalf/leaflet-ajax/issues"
+  },
+  "devDependencies": {
+    "jshint": "^2.8.0",
+    "uglify-js": "^2.4.24"
   }
 }

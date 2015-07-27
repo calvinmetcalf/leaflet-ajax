@@ -31,6 +31,11 @@ L.Util.ajax = function(url, options) {
 		var response;
 		request = new Ajax();
 		request.open('GET', url);
+		if (options.headers) {
+			Object.keys(options.headers).forEach(function (key) {
+				request.setRequestHeader(key, options.headers[key]);
+			});
+		}
 		request.onreadystatechange = function() {
 			/*jslint evil: true */
 			if (request.readyState === 4) {

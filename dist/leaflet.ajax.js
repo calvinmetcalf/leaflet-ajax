@@ -505,7 +505,6 @@ require.alias("lie/lie.js", "lie/index.js");
 
 L.Util.Promise = require("lie");
 })();
-
 L.Util.ajax = function(url, options) {
 	'use strict';
 	options = options || {};
@@ -539,6 +538,11 @@ L.Util.ajax = function(url, options) {
 		var response;
 		request = new Ajax();
 		request.open('GET', url);
+		if (options.headers) {
+			Object.keys(options.headers).forEach(function (key) {
+				request.setRequestHeader(key, options.headers[key]);
+			});
+		}
 		request.onreadystatechange = function() {
 			/*jslint evil: true */
 			if (request.readyState === 4) {
@@ -567,7 +571,6 @@ L.Util.ajax = function(url, options) {
 	out.abort = cancel;
 	return out;
 };
-
 L.Util.jsonp = function(url, options) {
 	options = options || {};
 	var head = document.getElementsByTagName('head')[0];
@@ -607,7 +610,6 @@ L.Util.jsonp = function(url, options) {
 	return out;
 };
 L.Util.jsonp.cb = {};
-
 L.GeoJSON.AJAX = L.GeoJSON.extend({
 	defaultAJAXparams: {
 		dataType: 'json',
