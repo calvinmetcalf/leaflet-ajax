@@ -3,9 +3,7 @@ var L = global.L || require('leaflet');
 var Promise = require('lie');
 
 module.exports = function(url, options) {
-  if (!global._leafletJSONPcallbacks) {
-    global._leafletJSONPcallbacks = {};
-  }
+
   options = options || {};
   var head = document.getElementsByTagName('head')[0];
   var scriptNode = L.DomUtil.create('script', '', head);
@@ -21,10 +19,17 @@ module.exports = function(url, options) {
     }
     scriptNode.type = 'text/javascript';
     if (cbSuffix) {
+      if (!global._leafletJSONPcallbacks) {
+        global._leafletJSONPcallbacks = {
+          length: 0
+        };
+      }
+      global._leafletJSONPcallbacks.length++;
       global._leafletJSONPcallbacks[cbSuffix] = function(data) {
         head.removeChild(scriptNode);
         delete global._leafletJSONPcallbacks[cbSuffix];
-        if (!Object.keys(global._leafletJSONPcallbacks).length) {
+        global._leafletJSONPcallbacks.length--;
+        if (!global._leafletJSONPcallbacks.length) {
           delete global._leafletJSONPcallbacks;
         }
         resolve(data);
