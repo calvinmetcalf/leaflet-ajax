@@ -7,12 +7,11 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
     dataType: 'json',
     callbackParam: 'callback',
     local: false,
-    middleware: function(f) {
+    middleware: function (f) {
       return f;
     }
   },
-  initialize: function(url, options) {
-
+  initialize: function (url, options) {
     this.urls = [];
     if (url) {
       if (typeof url === 'string') {
@@ -34,26 +33,26 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
     this.ajaxParams = ajaxParams;
     this._layers = {};
     L.Util.setOptions(this, options);
-    this.on('data:loaded', function() {
+    this.on('data:loaded', function () {
       if (this.filter) {
         this.refilter(this.filter);
       }
     }, this);
     var self = this;
     if (this.urls.length > 0) {
-      new Promise(function(yes) {
+      new Promise(function (yes) {
         yes();
-      }).then(function() {
+      }).then(function () {
         self.addUrl();
       });
     }
   },
-  clearLayers: function() {
+  clearLayers: function () {
     this.urls = [];
     L.GeoJSON.prototype.clearLayers.call(this);
     return this;
   },
-  addUrl: function(url) {
+  addUrl: function (url) {
     var self = this;
     if (url) {
       if (typeof url === 'string') {
@@ -65,44 +64,44 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
     var loading = self.urls.length;
     var done = 0;
     self.fire('data:loading');
-    self.urls.forEach(function(url) {
+    self.urls.forEach(function (url) {
       if (self.ajaxParams.dataType.toLowerCase() === 'json') {
-        ajax(url, self.ajaxParams).then(function(d) {
+        ajax(url, self.ajaxParams).then(function (d) {
           var data = self.ajaxParams.middleware(d);
           self.addData(data);
           self.fire('data:progress', data);
-        }, function(err) {
+        }, function (err) {
           self.fire('data:progress', {
             error: err
           });
         });
       } else if (self.ajaxParams.dataType.toLowerCase() === 'jsonp') {
-        L.Util.jsonp(url, self.ajaxParams).then(function(d) {
+        L.Util.jsonp(url, self.ajaxParams).then(function (d) {
           var data = self.ajaxParams.middleware(d);
           self.addData(data);
           self.fire('data:progress', data);
-        }, function(err) {
+        }, function (err) {
           self.fire('data:progress', {
             error: err
           });
         });
       }
     });
-    self.on('data:progress', function() {
+    self.on('data:progress', function () {
       if (++done === loading) {
         self.fire('data:loaded');
       }
     });
   },
-  refresh: function(url) {
+  refresh: function (url) {
     url = url || this.urls;
     this.clearLayers();
     this.addUrl(url);
   },
-  refilter: function(func) {
+  refilter: function (func) {
     if (typeof func !== 'function') {
       this.filter = false;
-      this.eachLayer(function(a) {
+      this.eachLayer(function (a) {
         a.setStyle({
           stroke: true,
           clickable: true
@@ -110,8 +109,7 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
       });
     } else {
       this.filter = func;
-      this.eachLayer(function(a) {
-
+      this.eachLayer(function (a) {
         if (func(a.feature)) {
           a.setStyle({
             stroke: true,
@@ -130,6 +128,6 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 L.Util.Promise = Promise;
 L.Util.ajax = ajax;
 L.Util.jsonp = require('./jsonp');
-L.geoJson.ajax = function(geojson, options) {
+L.geoJson.ajax = function (geojson, options) {
   return new L.GeoJSON.AJAX(geojson, options);
 };

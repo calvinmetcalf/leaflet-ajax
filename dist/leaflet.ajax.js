@@ -329,6 +329,56 @@ function immediate(task) {
 },{}],3:[function(require,module,exports){
 (function (global){
 'use strict';
+var jsonp = require('./jsonp');
+var Promise = require('lie');
+
+module.exports = function (url, options) {
+  options = options || {};
+  if (options.jsonp) {
+    return jsonp(url, options);
+  }
+  var request;
+  var cancel;
+  var out = new Promise(function (resolve, reject) {
+    cancel = reject;
+    if (global.XMLHttpRequest === undefined) {
+      reject('XMLHttpRequest is not supported');
+    }
+    var response;
+    request = new global.XMLHttpRequest();
+    request.open('GET', url);
+    request.onreadystatechange = function () {
+      if (request.readyState === 4) {
+        if ((request.status < 400 && options.local) || request.status === 200) {
+          if (global.JSON) {
+            response = JSON.parse(request.responseText);
+          } else {
+            reject(new Error('JSON is not supported'));
+          }
+          resolve(response);
+        } else {
+          if (!request.status) {
+            reject('Attempted cross origin request without CORS enabled');
+          } else {
+            reject(request.statusText);
+          }
+        }
+      }
+    };
+    request.send();
+  });
+  out.catch(function (reason) {
+    request.abort();
+    return reason;
+  });
+  out.abort = cancel;
+  return out;
+};
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./jsonp":5,"lie":1}],4:[function(require,module,exports){
+(function (global){
+'use strict';
 var L = global.L || require('leaflet');
 var Promise = require('lie');
 var ajax = require('./ajax');
@@ -337,12 +387,11 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
     dataType: 'json',
     callbackParam: 'callback',
     local: false,
-    middleware: function(f) {
+    middleware: function (f) {
       return f;
     }
   },
-  initialize: function(url, options) {
-
+  initialize: function (url, options) {
     this.urls = [];
     if (url) {
       if (typeof url === 'string') {
@@ -364,26 +413,26 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
     this.ajaxParams = ajaxParams;
     this._layers = {};
     L.Util.setOptions(this, options);
-    this.on('data:loaded', function() {
+    this.on('data:loaded', function () {
       if (this.filter) {
         this.refilter(this.filter);
       }
     }, this);
     var self = this;
     if (this.urls.length > 0) {
-      new Promise(function(yes) {
+      new Promise(function (yes) {
         yes();
-      }).then(function() {
+      }).then(function () {
         self.addUrl();
       });
     }
   },
-  clearLayers: function() {
+  clearLayers: function () {
     this.urls = [];
     L.GeoJSON.prototype.clearLayers.call(this);
     return this;
   },
-  addUrl: function(url) {
+  addUrl: function (url) {
     var self = this;
     if (url) {
       if (typeof url === 'string') {
@@ -395,44 +444,44 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
     var loading = self.urls.length;
     var done = 0;
     self.fire('data:loading');
-    self.urls.forEach(function(url) {
+    self.urls.forEach(function (url) {
       if (self.ajaxParams.dataType.toLowerCase() === 'json') {
-        ajax(url, self.ajaxParams).then(function(d) {
+        ajax(url, self.ajaxParams).then(function (d) {
           var data = self.ajaxParams.middleware(d);
           self.addData(data);
           self.fire('data:progress', data);
-        }, function(err) {
+        }, function (err) {
           self.fire('data:progress', {
             error: err
           });
         });
       } else if (self.ajaxParams.dataType.toLowerCase() === 'jsonp') {
-        L.Util.jsonp(url, self.ajaxParams).then(function(d) {
+        L.Util.jsonp(url, self.ajaxParams).then(function (d) {
           var data = self.ajaxParams.middleware(d);
           self.addData(data);
           self.fire('data:progress', data);
-        }, function(err) {
+        }, function (err) {
           self.fire('data:progress', {
             error: err
           });
         });
       }
     });
-    self.on('data:progress', function() {
+    self.on('data:progress', function () {
       if (++done === loading) {
         self.fire('data:loaded');
       }
     });
   },
-  refresh: function(url) {
+  refresh: function (url) {
     url = url || this.urls;
     this.clearLayers();
     this.addUrl(url);
   },
-  refilter: function(func) {
+  refilter: function (func) {
     if (typeof func !== 'function') {
       this.filter = false;
-      this.eachLayer(function(a) {
+      this.eachLayer(function (a) {
         a.setStyle({
           stroke: true,
           clickable: true
@@ -440,8 +489,7 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
       });
     } else {
       this.filter = func;
-      this.eachLayer(function(a) {
-
+      this.eachLayer(function (a) {
         if (func(a.feature)) {
           a.setStyle({
             stroke: true,
@@ -460,75 +508,23 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
 L.Util.Promise = Promise;
 L.Util.ajax = ajax;
 L.Util.jsonp = require('./jsonp');
-L.geoJson.ajax = function(geojson, options) {
+L.geoJson.ajax = function (geojson, options) {
   return new L.GeoJSON.AJAX(geojson, options);
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ajax":4,"./jsonp":5,"leaflet":undefined,"lie":1}],4:[function(require,module,exports){
-(function (global){
-'use strict';
-var jsonp = require('./jsonp');
-var Promise = require('lie');
-module.exports = function(url, options) {
-
-  options = options || {};
-  if (options.jsonp) {
-    return jsonp(url, options);
-  }
-  var request;
-  var cancel;
-  var out = new Promise(function(resolve, reject) {
-    cancel = reject;
-    if (global.XMLHttpRequest === undefined) {
-      reject('XMLHttpRequest is not supported');
-    }
-    var response;
-    request = new XMLHttpRequest();
-    request.open('GET', url);
-    request.onreadystatechange = function() {
-      /*jslint evil: true */
-      if (request.readyState === 4) {
-        if ((request.status < 400 && options.local) || request.status === 200) {
-          if (global.JSON) {
-            response = JSON.parse(request.responseText);
-          } else {
-            reject(new Error('JSON is not supported'));
-          }
-          resolve(response);
-        } else {
-          if (!request.status) {
-            reject('Attempted cross origin request without CORS enabled');
-          } else {
-            reject(request.statusText);
-          }
-        }
-      }
-    };
-    request.send();
-  });
-  out.then(null, function(reason) {
-    request.abort();
-    return reason;
-  });
-  out.abort = cancel;
-  return out;
-};
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./jsonp":5,"lie":1}],5:[function(require,module,exports){
+},{"./ajax":3,"./jsonp":5,"leaflet":undefined,"lie":1}],5:[function(require,module,exports){
 (function (global){
 'use strict';
 var L = global.L || require('leaflet');
 var Promise = require('lie');
 
-module.exports = function(url, options) {
-
+module.exports = function (url, options) {
   options = options || {};
   var head = document.getElementsByTagName('head')[0];
   var scriptNode = L.DomUtil.create('script', '', head);
   var cbName, ourl, cbSuffix, cancel;
-  var out = new Promise(function(resolve, reject) {
+  var out = new Promise(function (resolve, reject) {
     cancel = reject;
     var cbParam = options.cbParam || 'callback';
     if (options.callbackName) {
@@ -545,7 +541,7 @@ module.exports = function(url, options) {
         };
       }
       global._leafletJSONPcallbacks.length++;
-      global._leafletJSONPcallbacks[cbSuffix] = function(data) {
+      global._leafletJSONPcallbacks[cbSuffix] = function (data) {
         head.removeChild(scriptNode);
         delete global._leafletJSONPcallbacks[cbSuffix];
         global._leafletJSONPcallbacks.length--;
@@ -561,7 +557,7 @@ module.exports = function(url, options) {
       ourl = url + '&' + cbParam + '=' + cbName;
     }
     scriptNode.src = ourl;
-  }).then(null, function(reason) {
+  }).then(null, function (reason) {
     head.removeChild(scriptNode);
     delete L.Util.ajax.cb[cbSuffix];
     return reason;
@@ -571,4 +567,4 @@ module.exports = function(url, options) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"leaflet":undefined,"lie":1}]},{},[3]);
+},{"leaflet":undefined,"lie":1}]},{},[4]);

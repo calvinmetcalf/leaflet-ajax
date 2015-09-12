@@ -1,24 +1,23 @@
 'use strict';
 var jsonp = require('./jsonp');
 var Promise = require('lie');
-module.exports = function(url, options) {
 
+module.exports = function (url, options) {
   options = options || {};
   if (options.jsonp) {
     return jsonp(url, options);
   }
   var request;
   var cancel;
-  var out = new Promise(function(resolve, reject) {
+  var out = new Promise(function (resolve, reject) {
     cancel = reject;
     if (global.XMLHttpRequest === undefined) {
       reject('XMLHttpRequest is not supported');
     }
     var response;
-    request = new XMLHttpRequest();
+    request = new global.XMLHttpRequest();
     request.open('GET', url);
-    request.onreadystatechange = function() {
-      /*jslint evil: true */
+    request.onreadystatechange = function () {
       if (request.readyState === 4) {
         if ((request.status < 400 && options.local) || request.status === 200) {
           if (global.JSON) {
@@ -38,7 +37,7 @@ module.exports = function(url, options) {
     };
     request.send();
   });
-  out.then(null, function(reason) {
+  out.catch(function (reason) {
     request.abort();
     return reason;
   });

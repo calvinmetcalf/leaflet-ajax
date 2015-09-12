@@ -1,6 +1,9 @@
 leaflet-ajax
 ===========
 
+[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
+
+
 Allows you to call JSON via an Ajax call with a jsonp fallback.
 
 ```javascript
@@ -18,8 +21,6 @@ if your downloading data from an ESRI based thing which will have separate line,
 As you see you can also use lower case methods without creating new objects
 
 For weirder jsonp you can set "callbackParam" for if you need to change the name of the callback parameter to something besides "callback", e.g. [Mapquest Nominative Open](http://open.mapquestapi.com/nominatim/) uses "json_callback" instead of "callback".
-
-If you want to use `eval` to parse JSON in older browsers you need to pass an option `evil` set to something truthy.
 
 If you want to be able to load stuff from the file system (with appropriate custom flags set) set local to true.
 

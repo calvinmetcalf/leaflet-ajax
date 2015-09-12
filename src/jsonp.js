@@ -2,13 +2,12 @@
 var L = global.L || require('leaflet');
 var Promise = require('lie');
 
-module.exports = function(url, options) {
-
+module.exports = function (url, options) {
   options = options || {};
   var head = document.getElementsByTagName('head')[0];
   var scriptNode = L.DomUtil.create('script', '', head);
   var cbName, ourl, cbSuffix, cancel;
-  var out = new Promise(function(resolve, reject) {
+  var out = new Promise(function (resolve, reject) {
     cancel = reject;
     var cbParam = options.cbParam || 'callback';
     if (options.callbackName) {
@@ -25,7 +24,7 @@ module.exports = function(url, options) {
         };
       }
       global._leafletJSONPcallbacks.length++;
-      global._leafletJSONPcallbacks[cbSuffix] = function(data) {
+      global._leafletJSONPcallbacks[cbSuffix] = function (data) {
         head.removeChild(scriptNode);
         delete global._leafletJSONPcallbacks[cbSuffix];
         global._leafletJSONPcallbacks.length--;
@@ -41,7 +40,7 @@ module.exports = function(url, options) {
       ourl = url + '&' + cbParam + '=' + cbName;
     }
     scriptNode.src = ourl;
-  }).then(null, function(reason) {
+  }).then(null, function (reason) {
     head.removeChild(scriptNode);
     delete L.Util.ajax.cb[cbSuffix];
     return reason;
