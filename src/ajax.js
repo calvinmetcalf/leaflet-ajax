@@ -16,7 +16,7 @@ module.exports = function (url, options) {
     }
     var response;
     request = new global.XMLHttpRequest();
-    request.open('GET', url);
+    request.open((Object.keys(options.post).length > 0)?'POST':'GET', url);
     request.onreadystatechange = function () {
       if (request.readyState === 4) {
         if ((request.status < 400 && options.local) || request.status === 200) {
@@ -35,7 +35,14 @@ module.exports = function (url, options) {
         }
       }
     };
-    request.send();
+    if(Object.keys(options.post).length > 0)
+    {
+      request.send(options.post);
+    }
+    else
+    {
+      request.send();
+    }
   });
   out.catch(function (reason) {
     request.abort();
