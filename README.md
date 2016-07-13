@@ -41,6 +41,19 @@ var geojsonLayer = L.geoJson.ajax("route/to/esri.json",{
     });
 ```
 
+You can also use a post request by supplying post parameters : 
+
+```javascript
+var geojsonLayer = L.geoJson.ajax("route/to/esri.json",{
+    	post : {postField : 'data1'}
+    });
+
+    //or
+
+geojsonLayer.refresh("route/to/esri.json", postData);
+```
+
+
 addUrl does not clear the current layers but adds to the current one,  e.g.:
 
 ```javascript

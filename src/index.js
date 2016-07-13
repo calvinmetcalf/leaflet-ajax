@@ -9,7 +9,8 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
     local: false,
     middleware: function (f) {
       return f;
-    }
+    },
+    post:{}
   },
   initialize: function (url, options) {
     this.urls = [];
@@ -93,8 +94,9 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
       }
     });
   },
-  refresh: function (url) {
+  refresh: function (url,post) {
     url = url || this.urls;
+    this.ajaxParams.post = post || {};
     this.clearLayers();
     this.addUrl(url);
   },
