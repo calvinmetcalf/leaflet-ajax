@@ -24,12 +24,10 @@
     <body>
     <div id="map"></div>
       <script type="text/javascript">var m= L.map('map').setView([42.2, -71], 8);
-
-      var mapQuestAttr = 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; ';
-      var osmDataAttr = 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+var osmDataAttr = 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
       var mopt = {
-          url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.jpeg',
-          options: {attribution:mapQuestAttr + osmDataAttr, subdomains:'1234'}
+          url: 'https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY3dtIiwiYSI6InFoYkpvS00ifQ.WHqQ_q865NKjIQB6Wpoi2w',
+          options: {attribution:'© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'}
         };
       var osm = L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:osmDataAttr});
       var mq=L.tileLayer(mopt.url,mopt.options);
@@ -37,7 +35,7 @@
       mq.addTo(m);
 
       var baseMaps = {
-          "Map Quest": mq,
+          "Mapbox Streets": mq,
           "Open Street Map":osm
       };
 
