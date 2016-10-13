@@ -40,8 +40,8 @@ L.GeoJSON.AJAX = L.GeoJSON.extend({
     }, this);
     var self = this;
     if (this.urls.length > 0) {
-      new Promise(function (yes) {
-        yes();
+      new Promise(function (resolve) {
+        resolve();
       }).then(function () {
         self.addUrl();
       });

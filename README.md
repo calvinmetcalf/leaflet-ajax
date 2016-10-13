@@ -24,6 +24,8 @@ For weirder jsonp you can set "callbackParam" for if you need to change the name
 
 If you want to be able to load stuff from the file system (with appropriate custom flags set) set local to true.
 
+If you want to set headers to the XMLHttpRequest set the 'headers' option equal to an object.
+
 Gives off three events `data:loading`, `data:progress` and `data:loaded`.
 
 - `data:loading` fires before we start downloading things, note if the constructor is given a url it won't wait to be added to the map

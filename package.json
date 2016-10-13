@@ -13,6 +13,7 @@
   "devDependencies": {
     "browserify": "^11.0.1",
     "express": "^4.13.3",
+    "semistandard": "^9.1.0",
     "uglify-js": "^2.4.24"
   },
   "repository": {
