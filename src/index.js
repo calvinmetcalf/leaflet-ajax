@@ -5,6 +5,7 @@ var ajax = require('./ajax');
 L.GeoJSON.AJAX = L.GeoJSON.extend({
   defaultAJAXparams: {
     dataType: 'json',
+	headers: {},
     callbackParam: 'callback',
     local: false,
     middleware: function (f) {
